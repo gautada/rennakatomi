@@ -1,6 +1,7 @@
 ARG DEBIAN_VERSION=13.6
 ARG HERMES_VERSION=0.84.4
 
+# --   BUILD CLOUDFLARE CLIENT FROM SOURCE
 FROM docker.io/gautada/debian:${DEBIAN_VERSION} AS BUILD
 # hadolint ignore=DL3008
 RUN apt-get update \
@@ -18,7 +19,7 @@ RUN git clone --branch ${FLARECTL_VERSION} --depth 1 https://github.com/cloudfla
 WORKDIR /opt/cloudflare-go/cmd/flarectl
 RUN go build -o /opt/flarectl .
 
-
+# Flux Stuff
 FROM docker.io/gautada/debian:${DEBIAN_VERSION} AS TOOLS
 # Prebuilt, version-pinned, checksum-verified arm64 binaries for the SOPS-based
 # Flux secret-management workflow (getsops/sops + fluxcd/flux CLI). Downloaded
@@ -45,7 +46,7 @@ RUN curl -fsSL -o flux.tar.gz "https://github.com/fluxcd/flux2/releases/download
  && tar -xzf flux.tar.gz flux \
  && chmod +x flux
 
-
+# Skills
 FROM docker.io/gautada/debian:${DEBIAN_VERSION} AS SKILLS
 # hadolint ignore=DL3008
 RUN apt-get update \
@@ -60,6 +61,15 @@ RUN git clone --depth 1 https://github.com/leunguu/pi-agent-config \
  && git clone --depth 1 https://github.com/badlogic/pi-skills \
  && git clone --depth 1 https://github.com/mattpocock/skills mattpocock-skills
 
+
+
+
+
+# +===========================================================================+
+# |                                                                           |
+# | FINAL                                                                     |
+# |                                                                           |
+# +===========================================================================+
 FROM docker.io/gautada/hermes:${HERMES_VERSION}
 
 # ╭――――――――――――――――――╮
