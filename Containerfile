@@ -164,6 +164,8 @@ RUN ln -fsv /mnt/volumes/secrets/.ssh_config config \
 WORKDIR /home/${USER}
 RUN ln -fsv /mnt/volumes/configuration/.gitconfig .gitconfig \
  && ln -fsv /mnt/volumes/configuration/.cfinventory .cfinventory
+
+ENV HERMES_WRITE_SAFE_ROOT=/home/${USER}/.hermes
 WORKDIR /home/${USER}
 RUN chown -R ${USER}:${USER} /home/${USER}
 
